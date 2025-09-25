@@ -1,0 +1,36 @@
+# React Native
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Metro
+.metro-health-check*
+
+# Android
+android/app/build/
+android/build/
+android/.gradle/
+android/app/src/main/assets/index.android.bundle
+
+# iOS
+ios/build/
+ios/Pods/
+ios/*.xcworkspace
+
+# Environment variables
+.env
+.env.local
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
