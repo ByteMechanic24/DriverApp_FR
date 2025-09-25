@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,7 +7,9 @@ import {
   Alert,
   AppState,
   ScrollView,
+  BackHandler,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -74,6 +76,35 @@ const TrackingScreen = ({ navigation, route }) => {
       SocketService.disconnect();
     };
   }, []);
+
+  // Override hardware back button to prevent accidental navigation
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        // Show confirmation dialog when back button is pressed
+        Alert.alert(
+          'Stop Tracking?',
+          'You need to stop GPS tracking before going back. This will end your current session.',
+          [
+            {
+              text: 'Cancel',
+              style: 'cancel',
+              onPress: () => {}
+            },
+            {
+              text: 'Stop Tracking',
+              style: 'destructive',
+              onPress: confirmStopTracking
+            }
+          ]
+        );
+        return true; // Prevent default back behavior
+      };
+
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => backHandler.remove();
+    }, [])
+  );
 
   const startLocationTracking = () => {
     LocationService.startTracking({
